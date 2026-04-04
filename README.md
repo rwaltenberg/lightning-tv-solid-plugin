@@ -10,7 +10,7 @@ The plugin installs a **skill** that:
 2. **Injects lightweight guardrails** (~300 tokens) into the conversation -- the 6 most critical rules that prevent DOM hallucination
 3. **Directs Claude to read detailed references on-demand** from a knowledge graph of 80 atomic notes
 
-This means it works seamlessly with any workflow -- including [superpowers](https://github.com/obra/superpowers)' subagent-driven development, brainstorming, and TDD skills. The controller receives the framework constraints and passes them to any subagents it spawns.
+Because it's a skill (not an agent), it integrates seamlessly with any workflow -- including subagent-driven development, brainstorming, and TDD. The controller receives the framework constraints and passes them to any subagents it spawns.
 
 ## Architecture
 
@@ -55,16 +55,9 @@ Type `/lightning-tv` to activate the skill explicitly in any conversation.
 
 See `skills/lightning-tv/notes/guardrails.md` for the complete 20-point ruleset.
 
-## Works With Superpowers
+## Compatibility
 
-When used alongside the [superpowers](https://github.com/obra/superpowers) plugin:
-
-- **Brainstorming**: The skill's guardrails inform design decisions
-- **Subagent-driven development**: The controller includes Lightning TV constraints when dispatching implementer subagents
-- **Code review**: Reviewers can consult the knowledge graph for framework-specific checks
-- **TDD**: Test implementations respect the framework's actual API surface
-
-No special configuration needed -- the skill auto-triggers and integrates naturally.
+The skill-based architecture means it works with any Claude Code workflow or plugin. Because the guardrails are injected into the conversation context (not isolated in a subagent), any workflow that dispatches subagents will naturally pass the framework constraints along.
 
 ## Source Material
 
