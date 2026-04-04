@@ -1,0 +1,8 @@
+{
+  "name": "lightning-tv",
+  "description": "Expert AI coding agent for building Smart TV applications with @lightningtv/solid. Enforces framework constraints (no DOM, WebGL scene graph, custom flex engine, D-pad focus management) and provides a traversable knowledge graph of 80 atomic reference notes.",
+  "version": "1.0.0",
+  "author": {
+    "name": "rwaltenberg"
+  }
+}
