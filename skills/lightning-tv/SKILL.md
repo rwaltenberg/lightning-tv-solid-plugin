@@ -1,37 +1,38 @@
 ---
 name: lightning-tv
-description: Activate the Lightning TV expert agent for building Smart TV applications with @lightningtv/solid. Delegates coding tasks to a specialized agent that enforces framework constraints and has a traversable knowledge graph of 80 API/rule reference notes.
+description: Lightning TV framework expertise for @lightningtv/solid Smart TV applications. Prevents DOM hallucination and enforces framework constraints.
 trigger: code imports `@lightningtv/solid` or `@lightningtv/solid/primitives`, or user asks about Lightning TV, Lightning renderer, or Smart TV UI development with SolidJS
 user-invocable: true
 ---
 
-# Lightning TV Expert Mode
+# Lightning TV Project Detected
 
-You are now working on a **@lightningtv/solid** Smart TV application. This framework renders to a WebGL/Canvas GPU scene graph -- NOT the browser DOM.
+You are working on a **@lightningtv/solid** application. This framework renders to a **WebGL/Canvas GPU scene graph**, NOT the browser DOM. Applying standard web patterns will break things silently.
 
-**Delegate all coding tasks to the `lightning-tv` agent** using the Agent tool with `subagent_type: "lightning-tv"`. The agent has:
-- Anti-hallucination guardrails (forbidden HTML tags, forbidden DOM APIs)
-- 80 atomic reference notes covering flex layout traps, focus/navigation rules, reactivity patterns, and full API docs for every primitive
-- A traversable knowledge graph it consults before writing code
+## Critical Rules (always apply)
 
-## When to delegate
+1. **ONLY `<view>`, `<node>`, `<text>` exist.** No `<div>`, `<span>`, `<img>`, or any HTML tag.
+2. **No DOM APIs.** No `document`, `addEventListener`, `querySelector`, `classList`, `innerHTML`.
+3. **`forwardFocus` on every container** that holds focusable children -- without it, children never receive focus.
+4. **Key handlers must `return true`** to stop event propagation.
+5. **`style` is set once and locked.** Use signals on individual props or `$`-prefixed states for dynamic visuals.
+6. **Always `color={0xffffffff}`** when using `src` for images.
 
-- Writing or modifying components (`<view>`, `<text>`, Row, Column, Grid, etc.)
-- Debugging layout, focus, or navigation issues
-- Questions about API props, defaults, or behavioral quirks
-- Code review of @lightningtv/solid code
+## Before writing or reviewing @lightningtv/solid code
 
-## When NOT to delegate
+Read the full guardrails and quick reference:
+- **Guardrails & rules**: `notes/guardrails.md` (in this skill's directory)
+- **Knowledge graph index**: `notes/MOC.md` (in this skill's directory)
 
-- Build tooling, bundler config, CI/CD (not framework-specific)
-- Pure SolidJS logic with no Lightning TV rendering (signals, stores, routing)
-- General TypeScript/JavaScript questions
+## For API details on any component or utility
 
-## Quick guardrails (always apply, even without delegation)
+Read the relevant API note from `notes/api/` (in this skill's directory):
+- `notes/api/MOC.md` lists every available reference
+- Each note has full props, defaults, signatures, and gotchas
 
-1. **ONLY `<view>`, `<node>`, `<text>` exist** -- no HTML tags
-2. **No DOM APIs** -- no `document`, `addEventListener`, `querySelector`
-3. **`forwardFocus` on every container** with focusable children
-4. **Key handlers must `return true`** to stop propagation
-5. **`style` is set once and locked** -- use signals or states for dynamics
-6. **Always `color={0xffffffff}`** when using `src` for images
+## When dispatching subagents for implementation
+
+Include these instructions in the subagent prompt:
+- "This is a @lightningtv/solid project. Only `<view>`, `<node>`, `<text>` JSX elements exist. No HTML tags. No DOM APIs."
+- "Read `[skill-dir]/notes/guardrails.md` before writing code."
+- "For component API details, read the relevant note in `[skill-dir]/notes/api/`."

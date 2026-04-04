@@ -1,28 +1,25 @@
-# Lightning TV Expert Agent
+# Lightning TV Expert Plugin
 
-A Claude Code plugin providing an expert AI coding agent for building Smart TV applications with the [`@lightningtv/solid`](https://github.com/niceDev0908/solid) framework.
+A Claude Code plugin that provides framework expertise for building Smart TV applications with [`@lightningtv/solid`](https://github.com/niceDev0908/solid).
 
-## What It Does
+## How It Works
 
-This plugin installs a specialized agent that:
+The plugin installs a **skill** that:
 
-- **Prevents DOM hallucination** -- enforces that only `<view>`, `<node>`, and `<text>` JSX elements exist (no HTML tags, no DOM APIs)
-- **Knows the custom flex engine** -- 15 documented traps where Lightning's layout diverges from CSS Flexbox
-- **Handles D-pad navigation** -- 15 focus/navigation rules for TV remote control input
-- **Provides full API references** -- 29 API notes covering every primitive (Row, Column, Grid, VirtualRow, Image, Marquee, etc.) with complete props, defaults, and behavioral details
+1. **Auto-triggers** when your codebase imports `@lightningtv/solid`
+2. **Injects lightweight guardrails** (~300 tokens) into the conversation -- the 6 most critical rules that prevent DOM hallucination
+3. **Directs Claude to read detailed references on-demand** from a knowledge graph of 80 atomic notes
+
+This means it works seamlessly with any workflow -- including [superpowers](https://github.com/obra/superpowers)' subagent-driven development, brainstorming, and TDD skills. The controller receives the framework constraints and passes them to any subagents it spawns.
 
 ## Architecture
 
-The agent uses an Ars Contexta-style knowledge graph instead of a monolithic system prompt:
-
-- **`AGENT.md`** (~1,000 tokens, always loaded) -- guardrails, forbidden element lists, 20-point quick reference
-- **`notes/`** (80 atomic notes, loaded on-demand) -- deep technical reference organized by domain
-
 ```
-agents/lightning-tv/
-  AGENT.md
+skills/lightning-tv/
+  SKILL.md                    # ~300 tokens: trigger + critical rules + read instructions
   notes/
-    MOC.md                    # Master index
+    guardrails.md             # ~800 tokens: full forbidden tags, DOM APIs, 20-point reference
+    MOC.md                    # Master index of all knowledge domains
     constraints/  (8 notes)   # Anti-patterns that crash or fail silently
     core/         (6 notes)   # ElementNode, rendering pipeline, lifecycle
     flex/        (15 notes)   # Flex engine traps and CSS divergences
@@ -31,32 +28,43 @@ agents/lightning-tv/
     api/         (29 notes)   # Full API reference for every primitive
 ```
 
-This gives the agent **5x more knowledge** than a monolithic prompt while consuming **86% fewer tokens** on every request.
+**Token flow**: trigger costs ~300. First code task reads guardrails (~800). Each component adds ~300-500 for its API note. Typical conversation: ~1,400 tokens instead of a monolithic ~7,500.
 
 ## Installation
 
 ```bash
-# From GitHub
-/plugin marketplace add your-org/lightning-tv-agent
+# Via plugin command
+/plugin install lightning-tv
 
-# Or locally
-claude --plugin-dir ./lightning-tv-agent
+# Or add marketplace
+/plugin marketplace add your-org/lightning-tv-agent
 ```
+
+## Manual Invocation
+
+Type `/lightning-tv` to activate the skill explicitly in any conversation.
 
 ## Key Rules Enforced
 
-1. Only `<view>`, `<node>`, and `<text>` exist -- no HTML tags
-2. `forwardFocus` required on every container with focusable children
-3. `flexGrow` requires >= 2 children (silently ignored with 1)
-4. `style` is set once and locked -- use signals or states for dynamic visuals
-5. Key handlers must `return true` to stop event propagation
+1. Only `<view>`, `<node>`, `<text>` exist -- no HTML tags
+2. No DOM APIs -- no `document`, `addEventListener`, `querySelector`
+3. `forwardFocus` required on every container with focusable children
+4. Key handlers must `return true` to stop event propagation
+5. `style` is set once and locked -- use signals or states for dynamics
 6. Always set `color={0xffffffff}` when using `src` for images
-7. `textAlign` requires `contain` -- silently ignored without it
-8. Use `Visible` over `Show` for Lightning nodes that toggle frequently
-9. Virtual component children receive Accessors -- call `item()`, not `item`
-10. Never call DOM APIs -- no `document`, `addEventListener`, `querySelector`
 
-See `agents/lightning-tv/AGENT.md` for the complete 20-point ruleset.
+See `skills/lightning-tv/notes/guardrails.md` for the complete 20-point ruleset.
+
+## Works With Superpowers
+
+When used alongside the [superpowers](https://github.com/obra/superpowers) plugin:
+
+- **Brainstorming**: The skill's guardrails inform design decisions
+- **Subagent-driven development**: The controller includes Lightning TV constraints when dispatching implementer subagents
+- **Code review**: Reviewers can consult the knowledge graph for framework-specific checks
+- **TDD**: Test implementations respect the framework's actual API surface
+
+No special configuration needed -- the skill auto-triggers and integrates naturally.
 
 ## Source Material
 

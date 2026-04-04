@@ -1,28 +1,4 @@
----
-name: lightning-tv
-description: |
-  Use this agent when working on any @lightningtv/solid Smart TV project. It enforces the framework's strict constraints (no DOM, WebGL scene graph, custom flex engine, D-pad focus management) and prevents hallucination of standard web patterns. Examples: <example>Context: User is building UI with @lightningtv/solid. user: "Build me a horizontally scrolling row of movie poster cards" assistant: "Let me use the lightning-tv agent to build this correctly with the framework's Row primitive and proper focus management"</example> <example>Context: User has a layout bug in their Lightning TV app. user: "My flexGrow isn't working on this single child element" assistant: "Let me use the lightning-tv agent -- this is a known framework trap where flexGrow requires >= 2 children"</example>
-model: inherit
-allowed-tools: Read Grep Glob Bash Edit Write Agent
----
-
-# Lightning TV / SolidJS Expert Agent
-
-You are a **Senior Lightning-TV/Solid Framework Engineer**. You write production-grade Smart TV application code targeting `@lightningtv/solid` -- a SolidJS-based UI layer rendering to a **WebGL/Canvas GPU scene graph**, NOT the browser DOM.
-
-You must NEVER hallucinate standard web/DOM patterns. You must NEVER guess at APIs. If unsure whether a feature exists, say so explicitly.
-
-## How to Use Your Knowledge Graph
-
-You have a traversable knowledge base in `notes/`. When you need detailed information:
-
-1. Read `notes/MOC.md` to find the relevant domain
-2. Read the domain's `MOC.md` (e.g., `notes/flex/MOC.md`) to find the specific note
-3. Read the note for authoritative technical detail
-
-Always consult your notes before answering questions about APIs, props, or framework behavior. The notes are extracted directly from the framework's architectural documentation.
-
----
+# Lightning TV Guardrails & Quick Reference
 
 ## PRIME DIRECTIVE: THIS IS NOT THE WEB DOM
 
@@ -31,13 +7,11 @@ Always consult your notes before answering questions about APIs, props, or frame
 ### Developer Mindset
 
 - **Scene graph nodes**, not DOM elements. No `document`, `querySelector`, `classList`, `addEventListener`, `style.cssText`, `innerHTML`.
-- **GPU textures and WebGL draw calls**, not CSS paint. Node creation = GPU resource allocation. Minimize creation/destruction churn.
+- **GPU textures and WebGL draw calls**, not CSS paint. Node creation = GPU resource allocation. Minimize creation/destruction.
 - **D-pad navigation** (TV remote: arrows, Enter, Back). No mouse cursor, no hover, no scroll wheel by default.
 - **Explicit pixel dimensions** required. No intrinsic/auto-sizing. Flex children MUST have `width`/`height`.
-- **SolidJS fine-grained reactivity** (signals, effects, memos). Updates write directly to GPU nodes via property proxies.
+- **SolidJS fine-grained reactivity**. Updates write directly to GPU nodes via property proxies.
 - **Single-pass synchronous layout**. The flex engine is NOT CSS Flexbox.
-
----
 
 ## FORBIDDEN HTML TAGS
 
@@ -76,9 +50,7 @@ These DO NOT EXIST and will cause runtime errors:
 
 `Portal` (solid-js/web), `Suspense` (solid-js), `className`, `classList`, `innerHTML`, DOM directives
 
----
-
-## QUICK REFERENCE: NON-NEGOTIABLE RULES
+## NON-NEGOTIABLE RULES
 
 1. **ONLY `<view>`, `<node>`, and `<text>` exist.** No HTML tags. Ever.
 2. **`forwardFocus` on every container** that holds focusable children.
@@ -100,3 +72,50 @@ These DO NOT EXIST and will cause runtime errors:
 18. **`flattenStyles` is first-wins**, not last-wins. Earlier array entries have higher priority.
 19. **Virtual component children receive Accessors** -- call `item()`, not `item`.
 20. **Use `scrollToIndex()`** to change selection, never mutate `selected` directly.
+
+## Colors
+
+Colors are `0xRRGGBBAA` numeric format, NOT CSS strings:
+```tsx
+color={0xff0000ff}   // solid red
+color={0xffffffff}   // white (required for images)
+color={0x00000000}   // transparent
+```
+
+## Application Bootstrap
+
+```tsx
+import { createRenderer, Config } from '@lightningtv/solid';
+import { useFocusManager } from '@lightningtv/solid/primitives';
+
+Config.rendererOptions = { appWidth: 1920, appHeight: 1080 };
+const { render } = createRenderer(undefined, 'app');
+
+const App = () => {
+  useFocusManager();  // ONCE, at the root
+  return (
+    <view width={1920} height={1080} color={0x000000ff}>
+      {/* Your application */}
+    </view>
+  );
+};
+
+render(() => <App />);
+```
+
+## Component Anatomy
+
+```tsx
+import { type NodeStyles } from '@lightningtv/solid';
+
+const cardStyle: NodeStyles = {
+  width: 300, height: 200, color: 0x1a1a1aff, borderRadius: 12,
+  $focus: { color: 0x333333ff, scale: 1.05 },
+};
+
+const Card = (props) => (
+  <view style={cardStyle} onEnter={() => { props.onSelect?.(); return true; }}>
+    <text y={20} x={20} fontSize={28} color={0xffffffff}>{props.title}</text>
+  </view>
+);
+```
