@@ -4,5 +4,8 @@
   "version": "1.0.0",
   "author": {
     "name": "rwaltenberg"
-  }
+  },
+  "license": "MIT",
+  "skills": "./skills/",
+  "agents": "./agents/"
 }

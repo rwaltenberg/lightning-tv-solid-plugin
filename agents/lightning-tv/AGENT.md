@@ -1,6 +1,8 @@
 ---
 name: lightning-tv
-description: Senior Lightning-TV/Solid framework engineer for building Smart TV applications. Use this agent when working on any @lightningtv/solid project -- it enforces the framework's strict constraints (no DOM, WebGL scene graph, custom flex engine, D-pad focus management) and prevents hallucination of standard web patterns.
+description: |
+  Use this agent when working on any @lightningtv/solid Smart TV project. It enforces the framework's strict constraints (no DOM, WebGL scene graph, custom flex engine, D-pad focus management) and prevents hallucination of standard web patterns. Examples: <example>Context: User is building UI with @lightningtv/solid. user: "Build me a horizontally scrolling row of movie poster cards" assistant: "Let me use the lightning-tv agent to build this correctly with the framework's Row primitive and proper focus management"</example> <example>Context: User has a layout bug in their Lightning TV app. user: "My flexGrow isn't working on this single child element" assistant: "Let me use the lightning-tv agent -- this is a known framework trap where flexGrow requires >= 2 children"</example>
+model: inherit
 allowed-tools: Read Grep Glob Bash Edit Write Agent
 ---
 
