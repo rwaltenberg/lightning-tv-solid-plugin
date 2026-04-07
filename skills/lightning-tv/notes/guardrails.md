@@ -53,27 +53,30 @@ These DO NOT EXIST and will cause runtime errors:
 ## NON-NEGOTIABLE RULES
 
 1. **ONLY `<view>`, `<node>`, and `<text>` exist.** No HTML tags. Ever.
-2. **`forwardFocus` on every container** that holds focusable children.
-3. **`flexGrow` requires >= 2 children.** Single-child flexGrow is silently ignored.
-4. **NEVER use `wrap-reverse`.** It is broken in the new flex engine.
-5. **Children in flex containers MUST have explicit `width`/`height`.**
-6. **Container auto-sizing is the default** (`flexBoundary='contain'`). Set `'fixed'` to prevent it.
-7. **Auto-sizing only works with `justifyContent='flexStart'`.**
-8. **`style` is set ONCE and locked.** Use signals on individual props or states for dynamic visuals.
-9. **`setFocus()` is async** (microtask). Only the last call in a synchronous block wins.
-10. **Key handlers MUST `return true`** to stop event propagation.
-11. **Always set `color={0xffffffff}`** when using `src` for images.
-12. **`textAlign` requires `contain`.** Without it, text alignment is silently ignored.
-13. **Never animate before render.** Use `onCreate` or `onRender` callbacks.
-14. **Use `Visible` over `Show`** for Lightning nodes that toggle frequently.
-15. **State keys MUST start with `$`** (`$focus`, `$active`, `$disabled`).
-16. **Never call DOM APIs.** No `document`, no `addEventListener`, no `querySelector`.
-17. **Handler signatures differ**: `onLeft(e, target, elm)` vs `onKeyPress(e, mapped, elm, focused)`.
-18. **`flattenStyles` is first-wins**, not last-wins. Earlier array entries have higher priority.
-19. **Virtual component children receive Accessors** -- call `item()`, not `item`.
-20. **Use `scrollToIndex()`** to change selection, never mutate `selected` directly.
-21. **Shader properties (border, shadow, rounded) CANNOT be transitioned.** The shader transition path is broken -- `transition={{ border: ... }}` silently fails. Use states for instant switches or animate alpha/scale on a wrapper instead.
-22. **linearGradient and radialGradient have NO transition support.** They use a raw shader accessor with zero animation logic.
+2. **`forwardFocus` on every container** that holds focusable children. Without it, the container absorbs focus and children's handlers never fire.
+3. **`flexGrow` requires >= 2 children.** The flex engine guards with `numProcessedChildren > 1`; single-child flexGrow is silently ignored.
+4. **Children in flex containers MUST have explicit `width`/`height`.** GPU nodes don't auto-size from content.
+5. **Container auto-sizing is the default** (`flexBoundary='contain'`). Set `'fixed'` to prevent it.
+6. **Auto-sizing only works with `justifyContent='flexStart'`.**
+7. **JSX inline props override `style` object.** The style setter skips any key already set on the element. Use signals on individual props or `$`-prefixed states for dynamic visuals.
+8. **`setFocus()` is async** (microtask). Only the last call in a synchronous block wins.
+9. **Key handlers MUST `return true`** to stop event propagation.
+10. **Always set `color={0xffffffff}`** when using `src` for images. Use `color={0x00000001}` (near-transparent) for nodes that will receive `src` later dynamically.
+11. **`textAlign` requires `contain`.** Without it, text alignment is silently ignored.
+12. **Never animate before render.** Use `onCreate` or `onRender` callbacks.
+13. **Use `Visible` over `Show`** for Lightning nodes that toggle frequently.
+14. **State keys MUST start with `$`** (`$focus`, `$active`, `$disabled`).
+15. **Never call DOM APIs.** No `document`, no `addEventListener`, no `querySelector`.
+16. **Handler signatures differ by phase:**
+    - Bubble specific: `onLeft(e, elm, finalFocusElm)` — returns `boolean | void`
+    - Bubble fallback: `onKeyPress(e, mappedEvent, elm, finalFocusElm)` — note `mappedEvent` is second
+    - Capture: `onCaptureLeft(e, elm, finalFocusElm, mappedEvent?)` — `mappedEvent` is last
+17. **`flattenStyles` is first-wins**, not last-wins. Earlier array entries have higher priority.
+18. **Virtual component children receive Accessors** -- call `item()`, not `item`.
+19. **Use `scrollToIndex()`** to change selection on Row/Column/Virtual. Don't bypass it by setting `selected` externally on Virtual without also scrolling.
+20. **`selectedNode` getter is a side effect** -- reading it scans forward and mutates `this.selected`. Avoid in `createEffect`.
+21. **`linearGradient` and `radialGradient` have NO transition support.** They use a raw shader accessor with zero animation logic.
+22. **`wrap-reverse` may produce unexpected results.** The reversal interacts with RTL direction; combining both produces a single reversal, not a double.
 
 ## Colors
 
@@ -82,6 +85,7 @@ Colors are `0xRRGGBBAA` numeric format, NOT CSS strings:
 color={0xff0000ff}   // solid red
 color={0xffffffff}   // white (required for images)
 color={0x00000000}   // transparent
+color={0x00000001}   // near-transparent (safe default for dynamic src nodes)
 ```
 
 ## Application Bootstrap

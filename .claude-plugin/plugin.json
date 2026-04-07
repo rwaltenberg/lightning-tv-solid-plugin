@@ -1,7 +1,7 @@
 {
   "name": "lightning-tv",
-  "description": "Lightning TV framework expertise for @lightningtv/solid Smart TV applications. Auto-triggers on @lightningtv/solid imports. Provides guardrails against DOM hallucination and a traversable knowledge graph of 80 atomic API/rule reference notes.",
-  "version": "2.0.0",
+  "description": "Lightning TV framework expertise for @lightningtv/solid v3.x Smart TV applications. Auto-triggers on @lightningtv/solid imports. Provides guardrails against DOM hallucination and a traversable knowledge graph of 173 atomic entries across 9 domains, extracted and verified from @lightningtv/solid v3.2.3 source code.",
+  "version": "3.0.0",
   "author": {
     "name": "rwaltenberg"
   },
