@@ -35,6 +35,7 @@ If you need a single child to fill its parent, set the child's `width`/`height` 
 
 - The guard is on `numProcessedChildren`, not total children. Children with `flexItem=false` or `TextNode` instances are not counted. A container with three DOM children but two `flexItem=false` children still counts as one processable child.
 - There is no warning or error when `flexGrow` is ignored due to a single child. It fails silently.
+- **`flexGrow` + `width === 0` silently skips layout entirely.** `updateLayout()` returns early without running flex calculation if `display === 'flex' && flexGrow && width === 0` (`elementNode.ts:1158-1160`). This prevents infinite loops but means children won't be laid out at all -- no warning is emitted.
 
 ## Related Notes
 

@@ -79,9 +79,12 @@ const [xPos, setXPos] = createSignal(0);
 - Transitions only fire AFTER the node is rendered (`rendered === true`). Pre-render property sets are always direct writes even if `transition` is configured.
 - Only **animatable** properties (numeric props like x, y, w, h, color, alpha, scale, rotation, etc.) support transitions. Non-animating props (text, clipping, etc.) ignore `transition`.
 - `transition={true}` enables all animatable props -- be careful about unintended animations on initial mount.
+- **Shader properties (border, shadow, rounded, borderRadius, borderTop/Right/Bottom/Left) DO NOT reliably transition.** They use a separate broken code path. Do not put border/shadow/rounded in `transition` config. See [constraints/shader-transitions-broken.md].
+- **linearGradient and radialGradient CANNOT be transitioned at all.**
 
 ## Related Notes
 
 - [reactivity/signal-to-gpu-pipeline.md] -- the full signal -> animateProp path
 - [core/element-node-proxy.md] -- which properties are animatable
 - [constraints/animate-before-render.md] -- transitions only fire after render
+- [constraints/shader-transitions-broken.md] -- why border/shadow/rounded transitions fail

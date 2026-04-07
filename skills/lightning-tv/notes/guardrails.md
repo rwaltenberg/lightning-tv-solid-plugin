@@ -72,6 +72,8 @@ These DO NOT EXIST and will cause runtime errors:
 18. **`flattenStyles` is first-wins**, not last-wins. Earlier array entries have higher priority.
 19. **Virtual component children receive Accessors** -- call `item()`, not `item`.
 20. **Use `scrollToIndex()`** to change selection, never mutate `selected` directly.
+21. **Shader properties (border, shadow, rounded) CANNOT be transitioned.** The shader transition path is broken -- `transition={{ border: ... }}` silently fails. Use states for instant switches or animate alpha/scale on a wrapper instead.
+22. **linearGradient and radialGradient have NO transition support.** They use a raw shader accessor with zero animation logic.
 
 ## Colors
 

@@ -57,6 +57,7 @@ const [showImage, setShowImage] = createSignal(true);
 - The auto-white-color only fires post-render AND only when no color is already set. Pre-render JSX with `src` but no `color` renders transparent.
 - Setting `src` to `null` clears color to `0x00000000` regardless of what was there before.
 - The `color` prop accepts `string | number` -- use `hexColor()` utility for string conversion.
+- **`0x00000000` (transparent) is falsy**: The check is `!this.color`, so `color={0x00000000}` is treated as "no color set". If you intentionally set a transparent color and later assign `src`, the color gets auto-overridden to white. Use `0x00000001` (alpha 1/255) as a nearly-transparent-but-truthy workaround. See [constraints/rtt-color-defaults.md].
 
 ## Related Notes
 

@@ -141,9 +141,12 @@ onLayout?: (this: ElementNode, target: ElementNode) => void;
 onEvent?: OnEvent;
 ```
 
-### Shader/Effects Accessors
+### Shader/Effects Accessors (NOT animatable via transition prop)
+
+These use `shaderAccessor()` / `createRawShaderAccessor()` -- a separate code path from regular animatable properties. **Do NOT include these in `transition` config.**
 
 ```ts
+// shaderAccessor -- transition path exists but is broken
 border: BorderStyle;
 borderBottom: BorderStyle;
 borderTop: BorderStyle;
@@ -152,6 +155,8 @@ borderRight: BorderStyle;
 shadow: ShadowProps;
 rounded: BorderRadius;          // number | number[]
 borderRadius: BorderRadius;     // alias for rounded
+
+// createRawShaderAccessor -- NO transition support at all
 linearGradient: LinearGradientProps;
 radialGradient: RadialGradientProps;
 effects: StyleEffects;          // getter/setter on class body
