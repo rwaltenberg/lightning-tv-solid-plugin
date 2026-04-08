@@ -6,7 +6,7 @@
   "plugins": [
     {
       "name": "lightning-tv",
-      "source": ".",
+      "source": "./",
       "description": "Lightning TV framework expertise for @lightningtv/solid v3.x Smart TV applications.",
       "version": "3.0.0",
       "author": {
