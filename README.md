@@ -53,10 +53,8 @@ All entries were extracted directly from `@lightningtv/solid` v3.2.3 source code
 
 ```bash
 # Via plugin command
-/plugin install lightning-tv
-
-# Or add from marketplace
-/plugin marketplace add your-org/lightning-tv-agent
+claude plugin marketplace add anthropics/claude-plugins-community
+claude plugin install lightning-tv@claude-community
 ```
 
 ## Manual Invocation
