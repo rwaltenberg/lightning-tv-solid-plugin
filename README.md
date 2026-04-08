@@ -52,10 +52,16 @@ All entries were extracted directly from `@lightningtv/solid` v3.2.3 source code
 ## Installation
 
 ```bash
-# Via plugin command
+# From the community marketplace
 claude plugin marketplace add anthropics/claude-plugins-community
 claude plugin install lightning-tv@claude-community
+
+# Or add this project's marketplace directly
+claude plugin marketplace add rwaltenberg/lightning-tv-agent
+claude plugin install lightning-tv@lightning-tv-agent
 ```
+
+Adding the marketplace directly ensures you always get updates from this repository rather than depending on community marketplace sync.
 
 ## Manual Invocation
 

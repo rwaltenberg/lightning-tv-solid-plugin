@@ -6,5 +6,7 @@
     "name": "rwaltenberg"
   },
   "license": "MIT",
+  "repository": "https://github.com/rwaltenberg/lightning-tv-agent",
+  "keywords": ["lightning-tv", "solid", "smart-tv", "lightningtv", "tv-app"],
   "skills": "./skills/"
 }
