@@ -57,8 +57,8 @@ claude plugin marketplace add anthropics/claude-plugins-community
 claude plugin install lightning-tv@claude-community
 
 # Or add this project's marketplace directly
-claude plugin marketplace add rwaltenberg/lightning-tv-agent
-claude plugin install lightning-tv@lightning-tv-agent
+claude plugin marketplace add rwaltenberg/lightning-tv-solid-plugin
+claude plugin install lightning-tv@lightning-tv-solid-plugin
 ```
 
 Adding the marketplace directly ensures you always get updates from this repository rather than depending on community marketplace sync.
