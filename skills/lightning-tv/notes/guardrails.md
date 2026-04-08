@@ -13,6 +13,10 @@
 - **SolidJS fine-grained reactivity**. Updates write directly to GPU nodes via property proxies.
 - **Single-pass synchronous layout**. The flex engine is NOT CSS Flexbox.
 
+## FORBIDDEN CSS LAYOUT MODES
+
+- `display: 'grid'` does NOT exist. Only `display: 'flex'` and `display: 'block'` are supported.
+
 ## FORBIDDEN HTML TAGS
 
 These DO NOT EXIST and will cause runtime errors:
@@ -76,17 +80,25 @@ These DO NOT EXIST and will cause runtime errors:
 19. **Use `scrollToIndex()`** to change selection on Row/Column/Virtual. Don't bypass it by setting `selected` externally on Virtual without also scrolling.
 20. **`selectedNode` getter is a side effect** -- reading it scans forward and mutates `this.selected`. Avoid in `createEffect`.
 21. **`linearGradient` and `radialGradient` have NO transition support.** They use a raw shader accessor with zero animation logic.
-22. **`wrap-reverse` may produce unexpected results.** The reversal interacts with RTL direction; combining both produces a single reversal, not a double.
+22. **`wrap-reverse` may produce unexpected results.** The reversal interacts with RTL direction; combining both produces a single reversal, not a double. **Critical:** In the new flex engine (`VITE_USE_NEW_FLEX`), the wrapping condition only checks `flexWrap === 'wrap'` — `wrap-reverse` is excluded from the wrapping logic entirely, making it effectively broken.
+23. **`VITE_USE_NEW_FLEX` changes flex behavior.** The new engine adds `flexShrink`, `flexBasis`, `flexCrossBoundary`, and per-side padding (`paddingTop`, `paddingRight`, `paddingBottom`, `paddingLeft`). But it also changes cross-alignment to account for padding (shifting baseline alignment vs the old engine), removes the `console.warn` when flex-grow has no available space, and breaks `wrap-reverse` (see rule 22). Check which engine your project uses — props like `flexShrink` and individual padding silently no-op on the old engine.
+
+## Positioning Shortcuts
+
+`right` and `bottom` props automatically set `mountX: 1` and `mountY: 1` respectively. `right={0}` pins the node's right edge flush with the parent's right edge. These are computed once during `render()` — they do NOT reactively update if the parent resizes.
+
+`center`, `centerX`, `centerY` similarly set `mount` to `0.5` and offset by half the parent dimension.
 
 ## Colors
 
-Colors are `0xRRGGBBAA` numeric format, NOT CSS strings:
+Colors are `0xRRGGBBAA` numeric format. String formats (`"#RRGGBB"`, `"#RRGGBBAA"`) also work via `hexColor()` conversion, but the codebase convention is numeric:
 ```tsx
 color={0xff0000ff}   // solid red
 color={0xffffffff}   // white (required for images)
 color={0x00000000}   // transparent
 color={0x00000001}   // near-transparent (safe default for dynamic src nodes)
 ```
+Named CSS colors (e.g., `'red'`, `'blue'`) are NOT supported.
 
 ## Application Bootstrap
 

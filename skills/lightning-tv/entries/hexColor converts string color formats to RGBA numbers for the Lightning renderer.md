@@ -39,6 +39,8 @@ Format lookup:
 
 This function is exported from `utils.ts` and is the standard way to pass colors from JSX props (which may be strings) into style properties or shader props.
 
+**Convention:** The codebase universally uses numeric `0xRRGGBBAA` format. String formats work but are not idiomatic. Named CSS colors (e.g., `'red'`) are not supported — they fall through to `0x00000000`.
+
 ---
 
 Source: [[utils]]

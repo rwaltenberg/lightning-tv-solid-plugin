@@ -30,6 +30,12 @@ The old engine only supports the `padding` array shorthand.
 
 **Gotcha:** Since the selection is at module load time (not runtime), you cannot switch engines without a Vite rebuild. Components using new-engine-only props (`flexShrink`, `flexBasis`, individual padding) will silently have no effect when running with the old engine.
 
+## New engine limitations
+
+- **`wrap-reverse` is broken.** The wrapping condition in `flexLayout.ts` only checks `flexWrap === 'wrap'`, excluding `wrap-reverse` from the wrapping logic entirely. The old engine handles both.
+- **Cross-alignment shifts.** The new engine accounts for padding in cross-axis alignment (`doCrossAlign` receives `paddingCrossStart`), which changes baseline alignment compared to the old engine. Layouts relying on the old cross-alignment behavior may shift.
+- **No overflow warning.** The old engine logs `console.warn` when flex-grow items have no available space to expand. The new engine silently does nothing, making flex-grow failures harder to debug.
+
 ---
 
 Related Entries:

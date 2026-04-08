@@ -27,9 +27,15 @@ When children overflow the container, `flexShrink` reduces their sizes proportio
 
 Both implementations share: flexDirection, justifyContent (all 6 values), alignItems/alignSelf (all 3 values), flexGrow, flexOrder, flexWrap/wrap-reverse, flexBoundary, container auto-resize, preFlex state preservation, _calcHeight, and Float32Array optimization.
 
+## New engine limitations
+
+- **`wrap-reverse` broken** — the wrapping condition (`flexWrap === 'wrap'`) excludes `wrap-reverse`, which the old engine handles correctly.
+- **Cross-alignment shift** — `doCrossAlign` now receives `paddingCrossStart`, changing baseline alignment compared to the old engine.
+- **No overflow warning** — the old engine's `console.warn` when flex-grow has no available space is removed, making failures silent.
+
 ## Which to use
 
-Since the import determines which runs, `flexLayout.ts` should be the primary implementation for any project needing complete CSS parity. Check the active import in `elementNode.ts` or the build configuration.
+`flexLayout.ts` should be the primary implementation for projects needing `flexShrink`, `flexBasis`, or per-side padding. However, projects using `wrap-reverse` should stick with the old engine or avoid that value. Check the active import in `elementNode.ts` or the `VITE_USE_NEW_FLEX` env var.
 
 ---
 
