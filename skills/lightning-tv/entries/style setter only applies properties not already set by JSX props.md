@@ -33,6 +33,8 @@ This means JSX inline props take priority over the `style` object:
 
 **`Config.lockStyles`:** When enabled, the style setter is a no-op after the first assignment. Useful in performance-critical scenarios to prevent style churn.
 
+**Write-once / non-reactive:** The `style` prop is effectively write-once initial state. Re-setting it is warned against in dev mode and blocked entirely when `Config.lockStyles` is enabled. It is NOT reactive — changing the style object after mount has no effect. Use `style` for static base properties and `$`-prefixed state variants (`$focus`, `$active`, `$disabled`). Use JSX inline props with signals for dynamic/reactive values.
+
 **Dev mode warning:** In dev mode, setting `style` twice on the same node logs a console warning with a link to the docs. This catches accidental double-style-setting patterns.
 
 **`_undoStyles`:** The `_stateChanged()` method uses `_style` as the rollback source — when states clear, it reads from `this.style[key]` to restore previous values. If a key is missing from `_style`, a dev warning fires.

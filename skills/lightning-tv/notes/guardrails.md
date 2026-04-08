@@ -62,7 +62,7 @@ These DO NOT EXIST and will cause runtime errors:
 4. **Children in flex containers MUST have explicit `width`/`height`.** GPU nodes don't auto-size from content.
 5. **Container auto-sizing is the default** (`flexBoundary='contain'`). Set `'fixed'` to prevent it.
 6. **Auto-sizing only works with `justifyContent='flexStart'`.**
-7. **JSX inline props override `style` object.** The style setter skips any key already set on the element. Use signals on individual props or `$`-prefixed states for dynamic visuals.
+7. **`style` is write-once initial state, not reactive.** Use it for static base properties and `$`-prefixed state variants (`$focus`, `$active`, `$disabled`). JSX inline props override `style` — the setter skips any key already set on the element. For dynamic/reactive values, use JSX inline props with signals. Re-setting `style` after mount warns in dev mode and is blocked by `Config.lockStyles`.
 8. **`setFocus()` is async** (microtask). Only the last call in a synchronous block wins.
 9. **Key handlers MUST `return true`** to stop event propagation.
 10. **Always set `color={0xffffffff}`** when using `src` for images. Use `color={0x00000001}` (near-transparent) for nodes that will receive `src` later dynamically.
@@ -79,7 +79,7 @@ These DO NOT EXIST and will cause runtime errors:
 18. **Virtual component children receive Accessors** -- call `item()`, not `item`.
 19. **Use `scrollToIndex()`** to change selection on Row/Column/Virtual. Don't bypass it by setting `selected` externally on Virtual without also scrolling.
 20. **`selectedNode` getter is a side effect** -- reading it scans forward and mutates `this.selected`. Avoid in `createEffect`.
-21. **`linearGradient` and `radialGradient` have NO transition support.** They use a raw shader accessor with zero animation logic.
+21. **`linearGradient`, `radialGradient`, and `border` have NO transition support.** Gradients use a raw shader accessor with zero animation logic. Border transitions silently fail because the `shaderAccessor` writes border props (`border-color`, `border-w`, etc.) into a detached object and passes it to `animate({ shaderProps })`, but the renderer cannot interpolate compound shader keys. `borderRadius` transitions DO work (single numeric `radius` value).
 22. **`wrap-reverse` may produce unexpected results.** The reversal interacts with RTL direction; combining both produces a single reversal, not a double. **Critical:** In the new flex engine (`VITE_USE_NEW_FLEX`), the wrapping condition only checks `flexWrap === 'wrap'` — `wrap-reverse` is excluded from the wrapping logic entirely, making it effectively broken.
 23. **`VITE_USE_NEW_FLEX` changes flex behavior.** The new engine adds `flexShrink`, `flexBasis`, `flexCrossBoundary`, and per-side padding (`paddingTop`, `paddingRight`, `paddingBottom`, `paddingLeft`). But it also changes cross-alignment to account for padding (shifting baseline alignment vs the old engine), removes the `console.warn` when flex-grow has no available space, and breaks `wrap-reverse` (see rule 22). Check which engine your project uses — props like `flexShrink` and individual padding silently no-op on the old engine.
 
